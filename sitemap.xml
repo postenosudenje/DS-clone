@@ -12,16 +12,6 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://postenosudenje.com/"/>
   </url>
 
-  <!-- Igra / kviz -->
-  <url>
-    <loc>https://postenosudenje.com/igra.html</loc>
-    <lastmod>2026-11-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="hr" href="https://postenosudenje.com/igra.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://postenosudenje.com/igra.html"/>
-  </url>
-
   <!-- Sekcije glavne stranice -->
   <url>
     <loc>https://postenosudenje.com/?section=statistika</loc>
