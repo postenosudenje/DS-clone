@@ -121,7 +121,8 @@ function updateSEOForSection(section) {
     pregled: 'Pošteno suđenje | Analiza sudaca, klubova i utakmica HNL-a',
     statistika: 'Statistika sudaca i klubova | Pošteno suđenje – HNL analiza',
     utakmice: 'Utakmice po kolima | Pošteno suđenje – HNL analiza',
-    usporedba: 'Usporedba sudaca i klubova | Pošteno suđenje – HNL'
+    usporedba: 'Usporedba sudaca i klubova | Pošteno suđenje – HNL',
+    igra: 'Kviz: Pogodi suca | Pošteno suđenje'
   };
   document.title = titles[section] || titles.pregled;
 }
@@ -205,13 +206,13 @@ function ocistiURL() {
 }
 
 // ============================================================
-// PROVJERA URL-a
+// PROVJERA URL-a — ?section=, ?sudac=, ?klub=
 // ============================================================
 function provjeriURL() {
   const params = new URLSearchParams(window.location.search);
 
   const sekcijaParam = params.get('section');
-  if (sekcijaParam && ['pregled', 'statistika', 'utakmice', 'usporedba'].includes(sekcijaParam)) {
+  if (sekcijaParam && ['pregled', 'statistika', 'utakmice', 'usporedba', 'igra'].includes(sekcijaParam)) {
     document.querySelectorAll("#mainMenu .menu-item[data-section]").forEach(m => m.classList.remove("active"));
     const menuItem = document.querySelector(`#mainMenu .menu-item[data-section="${sekcijaParam}"]`);
     if (menuItem) menuItem.classList.add("active");
@@ -228,6 +229,20 @@ function provjeriURL() {
     if (sekcijaParam === 'utakmice' && !kolaRenderirana) {
       popuniKola();
       kolaRenderirana = true;
+    }
+  } else {
+    document.querySelectorAll("#mainMenu .menu-item[data-section]").forEach(m => m.classList.remove("active"));
+    const pregledBtn = document.querySelector('#mainMenu .menu-item[data-section="pregled"]');
+    if (pregledBtn) pregledBtn.classList.add("active");
+    document.querySelectorAll(".section-panel").forEach(s => s.classList.remove("active"));
+    const pregledPanel = document.getElementById("section-pregled");
+    if (pregledPanel) pregledPanel.classList.add("active");
+    updateSEOForSection("pregled");
+
+    if (!klubTablicaRenderirana) {
+      renderKlubTablicu();
+      nacrtajZutiChart();
+      klubTablicaRenderirana = true;
     }
   }
 
@@ -294,7 +309,7 @@ function prikaziToast(poruka, tip = 'success') {
 }
 
 // ============================================================
-// SHARE — relativni URL-ovi
+// SHARE
 // ============================================================
 async function podijeli(tip, ime) {
   const base = window.location.href.split('?')[0].split('#')[0];
@@ -718,11 +733,6 @@ async function ucitajPodatke(sezona = TRENUTNA_SEZONA) {
       }
       return;
     }
-  }
-
-  if (!document.getElementById("app")) {
-    igraInicijaliziraj();
-    return;
   }
 
   const sirovi = dohvatiUtakmiceZaSezonu(sezona);
