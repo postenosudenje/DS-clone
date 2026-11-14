@@ -390,13 +390,15 @@ img.klub-grb { object-fit: contain; background: transparent; }
 
 body:has(#section-statistika.active) .season-menu,
 body:has(#section-utakmice.active) .season-menu,
-body:has(#section-usporedba.active) .season-menu {
+body:has(#section-usporedba.active) .season-menu,
+body:has(#section-igra.active) .season-menu {
   display: none !important;
 }
 
 body:has(#section-statistika.active) .main-menu,
 body:has(#section-utakmice.active) .main-menu,
-body:has(#section-usporedba.active) .main-menu {
+body:has(#section-usporedba.active) .main-menu,
+body:has(#section-igra.active) .main-menu {
   border-radius: 14px;
   margin-bottom: 1.5rem;
 }
@@ -1229,6 +1231,412 @@ tbody tr:last-child td { border-bottom: none; }
 .toast-success { border-color: var(--green); color: var(--green); }
 .toast-error { border-color: var(--red); color: var(--red); }
 
+/* IGRA */
+.igra-start,
+.igra-kraj {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.igra-start-icon,
+.igra-kraj-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--yellow-soft);
+  border: 2px solid var(--yellow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.2rem;
+  font-size: 2.2rem;
+  color: var(--yellow);
+}
+.igra-kraj-icon.neuspjeh {
+  background: rgba(239,68,68,0.1);
+  border-color: var(--red);
+  color: var(--red);
+}
+.igra-kraj-icon.savrseno {
+  background: rgba(74,222,128,0.1);
+  border-color: var(--green);
+  color: var(--green);
+}
+.igra-start h3,
+.igra-kraj h3 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+}
+.igra-start p,
+.igra-kraj p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 1.2rem;
+}
+.igra-pravila {
+  list-style: none;
+  text-align: left;
+  max-width: 420px;
+  margin: 0 auto 1.5rem;
+  padding: 0;
+}
+.igra-pravila li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 0.5rem 0;
+  color: var(--text-soft);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+.igra-pravila li i {
+  color: var(--green);
+  font-size: 0.85rem;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+.igra-pravila li strong { color: var(--text); }
+
+.igra-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0.85rem 1.6rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+.igra-btn-primary {
+  background: var(--yellow);
+  color: #000;
+  border-color: var(--yellow);
+}
+.igra-btn-primary:hover {
+  background: var(--yellow-deep);
+  border-color: var(--yellow-deep);
+  transform: translateY(-2px);
+}
+.igra-btn-secondary {
+  background: var(--card-bg-2);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.igra-btn-secondary:hover {
+  border-color: var(--yellow);
+  color: var(--yellow);
+  transform: translateY(-2px);
+}
+
+.igra-rekord {
+  margin-top: 1.2rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.igra-rekord i { color: var(--yellow); margin-right: 4px; }
+
+.igra-kviz {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.igra-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.igra-progress-wrap { flex: 1; min-width: 200px; }
+.igra-progress-bar {
+  height: 8px;
+  background: var(--card-bg-2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.4rem;
+}
+.igra-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--yellow), var(--yellow-deep));
+  width: 0%;
+  transition: width 0.4s ease;
+}
+.igra-progress-text {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.igra-jokeri {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+.igra-joker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.65rem 1.2rem;
+  border-radius: 10px;
+  background: var(--green);
+  border: 1px solid var(--green);
+  color: #000;
+  font-size: 0.85rem;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  letter-spacing: 0.3px;
+}
+.igra-joker:hover:not(:disabled) {
+  background: #2fbf60;
+  border-color: #2fbf60;
+  transform: translateY(-2px);
+}
+.igra-joker:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: var(--card-bg-2);
+  border-color: var(--border-strong);
+  color: var(--text-muted);
+}
+.igra-joker i { font-size: 0.9rem; }
+
+.igra-pitanje {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.8rem 1.5rem;
+  margin-bottom: 1.2rem;
+  text-align: center;
+}
+.igra-pitanje-tip {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--yellow);
+  font-weight: 800;
+  margin-bottom: 0.6rem;
+}
+.igra-pitanje-tekst {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 0.6rem;
+}
+.igra-pitanje-kontekst {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.igra-pitanje-kontekst .vs-badge {
+  display: inline-block;
+  background: var(--card-bg-2);
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-soft);
+  margin: 0 4px;
+}
+
+.igra-odgovori {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+.igra-odgovor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  background: var(--card-bg);
+  border: 2px solid var(--border-strong);
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: left;
+}
+.igra-odgovor:hover:not(:disabled) {
+  border-color: var(--yellow);
+  background: var(--yellow-soft);
+}
+.igra-odgovor:disabled { cursor: not-allowed; }
+.igra-odgovor-slovo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--card-bg-2);
+  border: 1px solid var(--border);
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--yellow);
+  flex-shrink: 0;
+}
+.igra-odgovor.eliminiran {
+  opacity: 0.25;
+  pointer-events: none;
+}
+.igra-odgovor.tocan {
+  border-color: var(--green);
+  background: rgba(74,222,128,0.12);
+}
+.igra-odgovor.tocan .igra-odgovor-slovo {
+  background: var(--green);
+  color: #000;
+  border-color: var(--green);
+}
+.igra-odgovor.netocan {
+  border-color: var(--red);
+  background: rgba(239,68,68,0.12);
+}
+.igra-odgovor.netocan .igra-odgovor-slovo {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+}
+
+.igra-publika {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+}
+.igra-publika-naslov {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.igra-publika-naslov i { color: var(--yellow); }
+.igra-publika-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.igra-publika-red {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-soft);
+}
+.igra-publika-red .slovo {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--card-bg-2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.75rem;
+  color: var(--yellow);
+  flex-shrink: 0;
+}
+.igra-publika-red .bar {
+  flex: 1;
+  height: 16px;
+  background: var(--card-bg-2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.igra-publika-red .bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--yellow), var(--yellow-deep));
+  width: 0%;
+  transition: width 0.6s ease;
+}
+.igra-publika-red .posto {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 0.8rem;
+  min-width: 40px;
+  text-align: right;
+}
+
+.igra-feedback {
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  font-weight: 700;
+  text-align: center;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+.igra-feedback.tocan {
+  background: rgba(74,222,128,0.12);
+  border: 1px solid var(--green);
+  color: var(--green);
+}
+.igra-feedback.netocan {
+  background: rgba(239,68,68,0.12);
+  border: 1px solid var(--red);
+  color: var(--red);
+}
+.igra-feedback i { margin-right: 6px; }
+
+.igra-kraj-bodovi {
+  background: var(--yellow-soft);
+  border: 2px solid var(--yellow);
+  border-radius: 16px;
+  padding: 1.2rem 2rem;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+}
+.igra-kraj-bodovi .broj {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--yellow);
+  line-height: 1;
+}
+.igra-kraj-bodovi .label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-top: 0.3rem;
+}
+.igra-kraj-akcije {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 /* SCROLLBAR */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -1391,6 +1799,15 @@ tbody tr:last-child td { border-bottom: none; }
 
   .sudac-stats h3, .klub-stats h3 { font-size: 1.4rem !important; gap: 8px; }
   .sudac-stats h3 .klub-grb, .klub-stats h3 .klub-grb { width: 34px; height: 34px; }
+
+  /* IGRA responsive */
+  .igra-odgovori { grid-template-columns: 1fr; }
+  .igra-pitanje-tekst { font-size: 1.05rem; }
+  .igra-start, .igra-kraj { padding: 1.8rem 1.2rem; }
+  .igra-start h3, .igra-kraj h3 { font-size: 1.3rem; }
+  .igra-kraj-bodovi .broj { font-size: 1.9rem; }
+  .igra-btn { width: 100%; }
+  .igra-kraj-akcije { flex-direction: column; }
 }
 
 @media (max-width: 420px) {
