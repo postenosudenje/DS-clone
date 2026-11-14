@@ -302,23 +302,23 @@ function generirajStranicuSuca(sudac, stat) {
     </nav>
   </header>
 
-<nav class="main-menu" id="mainMenu" role="navigation" aria-label="Glavna navigacija" style="margin-bottom:2rem;">
-  <a href="../index.html" class="menu-item" style="text-decoration:none;">
-    <i class="fas fa-clipboard-list" aria-hidden="true"></i> Pregled
-  </a>
-  <a href="../index.html?section=statistika" class="menu-item" style="text-decoration:none;">
-    <i class="fas fa-chart-pie" aria-hidden="true"></i> Statistika
-  </a>
-  <a href="../index.html?section=utakmice" class="menu-item" style="text-decoration:none;">
-    <i class="fas fa-futbol" aria-hidden="true"></i> Utakmice
-  </a>
-  <a href="../index.html?section=usporedba" class="menu-item" style="text-decoration:none;">
-    <i class="fas fa-code-compare" aria-hidden="true"></i> Usporedba
-  </a>
-  <a href="../igra.html" class="menu-item" style="text-decoration:none;">
-    <i class="fas fa-gamepad" aria-hidden="true"></i> Igra
-  </a>
-</nav>
+  <nav class="main-menu" id="mainMenu" role="navigation" aria-label="Glavna navigacija" style="margin-bottom:2rem;">
+    <a href="../index.html" class="menu-item" style="text-decoration:none;">
+      <i class="fas fa-clipboard-list" aria-hidden="true"></i> Pregled
+    </a>
+    <a href="../index.html?section=statistika" class="menu-item" style="text-decoration:none;">
+      <i class="fas fa-chart-pie" aria-hidden="true"></i> Statistika
+    </a>
+    <a href="../index.html?section=utakmice" class="menu-item" style="text-decoration:none;">
+      <i class="fas fa-futbol" aria-hidden="true"></i> Utakmice
+    </a>
+    <a href="../index.html?section=usporedba" class="menu-item" style="text-decoration:none;">
+      <i class="fas fa-code-compare" aria-hidden="true"></i> Usporedba
+    </a>
+    <a href="../index.html?section=igra" class="menu-item" style="text-decoration:none;">
+      <i class="fas fa-gamepad" aria-hidden="true"></i> Igra
+    </a>
+  </nav>
 
   <main id="main-content" role="main">
     <section class="section-panel active">
@@ -379,9 +379,9 @@ function generirajStranicuSuca(sudac, stat) {
       </div>
 
       <p style="text-align:center; margin-top:2rem;">
-<a href="../index.html" class="igra-btn igra-btn-primary" style="text-decoration:none;">
-  <i class="fas fa-arrow-left" aria-hidden="true"></i> Natrag na glavnu stranicu
-</a>
+        <a href="../index.html" class="igra-btn igra-btn-primary" style="text-decoration:none;">
+          <i class="fas fa-arrow-left" aria-hidden="true"></i> Natrag na glavnu stranicu
+        </a>
       </p>
     </section>
   </main>
@@ -512,19 +512,19 @@ function generirajStranicuKluba(klub, stat) {
   </header>
 
   <nav class="main-menu" id="mainMenu" role="navigation" aria-label="Glavna navigacija" style="margin-bottom:2rem;">
-    <a href="/" class="menu-item" style="text-decoration:none;">
+    <a href="../index.html" class="menu-item" style="text-decoration:none;">
       <i class="fas fa-clipboard-list" aria-hidden="true"></i> Pregled
     </a>
-    <a href="/?section=statistika" class="menu-item" style="text-decoration:none;">
+    <a href="../index.html?section=statistika" class="menu-item" style="text-decoration:none;">
       <i class="fas fa-chart-pie" aria-hidden="true"></i> Statistika
     </a>
-    <a href="/?section=utakmice" class="menu-item" style="text-decoration:none;">
+    <a href="../index.html?section=utakmice" class="menu-item" style="text-decoration:none;">
       <i class="fas fa-futbol" aria-hidden="true"></i> Utakmice
     </a>
-    <a href="/?section=usporedba" class="menu-item" style="text-decoration:none;">
+    <a href="../index.html?section=usporedba" class="menu-item" style="text-decoration:none;">
       <i class="fas fa-code-compare" aria-hidden="true"></i> Usporedba
     </a>
-    <a href="/igra.html" class="menu-item" style="text-decoration:none;">
+    <a href="../index.html?section=igra" class="menu-item" style="text-decoration:none;">
       <i class="fas fa-gamepad" aria-hidden="true"></i> Igra
     </a>
   </nav>
@@ -580,7 +580,7 @@ function generirajStranicuKluba(klub, stat) {
       </div>
 
       <p style="text-align:center; margin-top:2rem;">
-        <a href="/" class="igra-btn igra-btn-primary" style="text-decoration:none;">
+        <a href="../index.html" class="igra-btn igra-btn-primary" style="text-decoration:none;">
           <i class="fas fa-arrow-left" aria-hidden="true"></i> Natrag na glavnu stranicu
         </a>
       </p>
@@ -687,16 +687,6 @@ let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/"/>
   </url>
 
-  <!-- Igra / kviz -->
-  <url>
-    <loc>${baseUrl}/igra.html</loc>
-    <lastmod>${danas}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="hr" href="${baseUrl}/igra.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/igra.html"/>
-  </url>
-
   <!-- Sekcije glavne stranice -->
   <url>
     <loc>${baseUrl}/?section=statistika</loc>
@@ -720,6 +710,12 @@ let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <loc>${baseUrl}/?section=pregled</loc>
     <lastmod>${danas}</lastmod>
     <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/?section=igra</loc>
+    <lastmod>${danas}</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
@@ -762,8 +758,11 @@ sitemap += `
 
 fs.writeFileSync(path.join(rootDir, 'sitemap.xml'), sitemap);
 
+// ============================================================
+// SAŽETAK
+// ============================================================
 console.log('');
 console.log('=== SAŽETAK ===');
 console.log(`Generirano sudačkih stranica: ${brojSudaca}`);
 console.log(`Generirano klupskih stranica: ${brojKlubova}`);
-console.log(`Sitemap ažuriran: sitemap.xml (${brojSudaca + brojKlubova + 7} URL-ova)`);
+console.log(`Sitemap ažuriran: sitemap.xml (${brojSudaca + brojKlubova + 6} URL-ova)`);
