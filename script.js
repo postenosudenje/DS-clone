@@ -673,7 +673,8 @@ function prikaziModalSudac(ime) {
 // UČITAVANJE PODATAKA — STATIČKI JSON
 // ============================================================
 async function ucitajPodatke(sezona = TRENUTNA_SEZONA) {
-  document.getElementById("errorBox").style.display = "none";
+  const errorBox = document.getElementById("errorBox");
+  if (errorBox) errorBox.style.display = "none";
 
   if (!PODACI_UCITANI) {
     try {
@@ -682,12 +683,20 @@ async function ucitajPodatke(sezona = TRENUTNA_SEZONA) {
       SVI_PODACI = await r.json();
       PODACI_UCITANI = true;
     } catch (err) {
-      document.getElementById("skeleton").style.display = "none";
-      const e = document.getElementById("errorBox");
-      e.style.display = "block";
-      e.innerHTML = `<b>Greška:</b> ${err.message}`;
+      const sk = document.getElementById("skeleton");
+      if (sk) sk.style.display = "none";
+      if (errorBox) {
+        errorBox.style.display = "block";
+        errorBox.innerHTML = `<b>Greška:</b> ${err.message}`;
+      }
       return;
     }
+  }
+
+  // Ako nema #app (npr. na igra.html), samo pokreni igru
+  if (!document.getElementById("app")) {
+    igraInicijaliziraj();
+    return;
   }
 
   const sirovi = dohvatiUtakmiceZaSezonu(sezona);
@@ -697,6 +706,8 @@ async function ucitajPodatke(sezona = TRENUTNA_SEZONA) {
 }
 
 function pokreni() {
+  if (!document.getElementById("app")) return;
+
   const sk = document.getElementById("skeleton");
   if (sk) sk.style.display = "none";
   document.getElementById("app").style.display = "block";
@@ -1612,16 +1623,37 @@ function igraGenerirajPitanja() {
 
   const svaPitanja = [];
 
-  // TIP 1: Koji sudac je sudio utakmicu?
+  // TIP 1: Koji sudac je sudio utakmicu? (sa brojem odluka)
   igraNasumicnoOdaberi(validne, 6).forEach(u => {
     const tocan = String(u['Glavni sudac']).trim();
     const ostali = sviSuci.filter(s => s !== tocan);
     const lazni = igraNasumicnoOdaberi(ostali, 3);
     const odgovori = igraNasumicnoOdaberi([tocan, ...lazni], 4);
+
+    // Izračunaj odluke u ovoj utakmici
+    const zuti = num(u['Žuti D']) + num(u['Žuti G']);
+    const crveni = num(u['Crveni D']) + num(u['Crveni G']);
+    const penal = num(u['Penal D']) + num(u['Penal G']);
+    const vp = num(u['VAR priznat D']) + num(u['VAR priznat G']);
+    const vpo = num(u['VAR poništen D']) + num(u['VAR poništen G']);
+    const ukupnoOdluka = zuti + crveni + penal + vp + vpo;
+
+    // Sastavi listu odluka (samo one koje su > 0)
+    const odluke = [];
+    if (zuti > 0) odluke.push(`🟨 ${zuti} žutih`);
+    if (crveni > 0) odluke.push(`🟥 ${crveni} crvenih`);
+    if (penal > 0) odluke.push(`⚽ ${penal} penala`);
+    if (vp > 0) odluke.push(`📺 ${vp} VAR priznatih`);
+    if (vpo > 0) odluke.push(`📺 ${vpo} VAR poništenih`);
+
+    const odlukeTekst = odluke.length > 0
+      ? ` · ${ukupnoOdluka} odluka (${odluke.join(', ')})`
+      : ` · bez odluka`;
+
     svaPitanja.push({
       tip: 'sudac',
       pitanje: 'Koji sudac je sudio ovu utakmicu?',
-      kontekst: `<strong>${u['Domaćin']}</strong> <span class="vs-badge">vs</span> <strong>${u['Gost']}</strong> · ${u.Kolo}. kolo`,
+      kontekst: `<strong>${u['Domaćin']}</strong> <span class="vs-badge">vs</span> <strong>${u['Gost']}</strong> · ${u.Kolo}. kolo${odlukeTekst}`,
       odgovori,
       tocan
     });
@@ -1805,7 +1837,7 @@ function igraOdaberiOdgovor(odgovor, btn) {
     }, 1200);
   } else {
     feedback.className = 'igra-feedback netocan';
-    feedback.innerHTML = `<i class="fas fa-times-circle"></i> Netočno! Točan odgovor: <strong>${p.tocan}</strong>`;
+    feedback.innerHTML = `<i class="fas fa-times-circle"></i> Netočno! Igra je gotova. Točan odgovor: <strong>${p.tocan}</strong>`;
     setTimeout(() => {
       igraZavrsi(false);
     }, 2200);
@@ -2047,7 +2079,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  igraInicijaliziraj();
+  // Na glavnoj stranici inicijaliziraj igru, na igra.html će je ucitajPodatke pozvati
+  if (document.getElementById("igraStart")) {
+    igraInicijaliziraj();
+  }
 
   ucitajPodatke(TRENUTNA_SEZONA);
 });
