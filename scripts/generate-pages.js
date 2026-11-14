@@ -282,7 +282,7 @@ function generirajStranicuSuca(sudac, stat) {
 <div class="container">
 
   <header class="header-center" role="banner">
-    <a href="/"><img src="https://i.imgur.com/TMWFtd5.png"
+    <a href="../index.html"><img src="https://i.imgur.com/TMWFtd5.png"
          alt="Pošteno suđenje – logo"
          class="site-logo" width="200" height="200"
          loading="eager" decoding="async"></a>
@@ -491,7 +491,7 @@ function generirajStranicuKluba(klub, stat) {
 <div class="container">
 
   <header class="header-center" role="banner">
-    <a href="/"><img src="https://i.imgur.com/TMWFtd5.png"
+    <a href="../index.html"><img src="https://i.imgur.com/TMWFtd5.png"
          alt="Pošteno suđenje – logo"
          class="site-logo" width="200" height="200"
          loading="eager" decoding="async"></a>
