@@ -121,8 +121,7 @@ function updateSEOForSection(section) {
     pregled: 'Pošteno suđenje | Analiza sudaca, klubova i utakmica HNL-a',
     statistika: 'Statistika sudaca i klubova | Pošteno suđenje – HNL analiza',
     utakmice: 'Utakmice po kolima | Pošteno suđenje – HNL analiza',
-    usporedba: 'Usporedba sudaca i klubova | Pošteno suđenje – HNL',
-    igra: 'Kviz: Pogodi suca | Pošteno suđenje'
+    usporedba: 'Usporedba sudaca i klubova | Pošteno suđenje – HNL'
   };
   document.title = titles[section] || titles.pregled;
 }
@@ -204,26 +203,58 @@ function ocistiURL() {
   const novaUrl = url.pathname + (url.search ? url.search : '');
   history.replaceState({}, '', novaUrl);
 }
+
+// ============================================================
+// PROVJERA URL-a — ?section=, ?sudac=, ?klub=
+// ============================================================
 function provjeriURL() {
   const params = new URLSearchParams(window.location.search);
+
+  // 1. ?section= parametar
+  const sekcijaParam = params.get('section');
+  if (sekcijaParam && ['pregled', 'statistika', 'utakmice', 'usporedba'].includes(sekcijaParam)) {
+    document.querySelectorAll("#mainMenu .menu-item[data-section]").forEach(m => m.classList.remove("active"));
+    const menuItem = document.querySelector(`#mainMenu .menu-item[data-section="${sekcijaParam}"]`);
+    if (menuItem) menuItem.classList.add("active");
+    document.querySelectorAll(".section-panel").forEach(s => s.classList.remove("active"));
+    const panel = document.getElementById("section-" + sekcijaParam);
+    if (panel) panel.classList.add("active");
+    updateSEOForSection(sekcijaParam);
+
+    if (sekcijaParam === 'pregled' && !klubTablicaRenderirana) {
+      renderKlubTablicu();
+      nacrtajZutiChart();
+      klubTablicaRenderirana = true;
+    }
+    if (sekcijaParam === 'utakmice' && !kolaRenderirana) {
+      popuniKola();
+      kolaRenderirana = true;
+    }
+  }
+
+  // 2. ?sudac= parametar
   const sudacSlug = params.get('sudac');
-  const klubSlug = params.get('klub');
   if (sudacSlug) {
     const sudac = pronadjiIzSluga(sudacSlug, sviSuci);
     if (sudac) {
       document.querySelectorAll(".menu-item[data-section]").forEach(m => m.classList.remove("active"));
-      document.querySelector('.menu-item[data-section="statistika"]').classList.add("active");
+      const statItem = document.querySelector('.menu-item[data-section="statistika"]');
+      if (statItem) statItem.classList.add("active");
       document.querySelectorAll(".section-panel").forEach(s => s.classList.remove("active"));
       document.getElementById("section-statistika").classList.add("active");
       prikaziModalSudac(sudac);
       return;
     }
   }
+
+  // 3. ?klub= parametar
+  const klubSlug = params.get('klub');
   if (klubSlug) {
     const klub = pronadjiIzSluga(klubSlug, sviKlubovi);
     if (klub) {
       document.querySelectorAll(".menu-item[data-section]").forEach(m => m.classList.remove("active"));
-      document.querySelector('.menu-item[data-section="statistika"]').classList.add("active");
+      const statItem = document.querySelector('.menu-item[data-section="statistika"]');
+      if (statItem) statItem.classList.add("active");
       document.querySelectorAll(".section-panel").forEach(s => s.classList.remove("active"));
       document.getElementById("section-statistika").classList.add("active");
       prikaziModalKlub(klub);
@@ -670,7 +701,7 @@ function prikaziModalSudac(ime) {
 }
 
 // ============================================================
-// UČITAVANJE PODATAKA — STATIČKI JSON
+// UČITAVANJE PODATAKA
 // ============================================================
 async function ucitajPodatke(sezona = TRENUTNA_SEZONA) {
   const errorBox = document.getElementById("errorBox");
@@ -780,6 +811,14 @@ function pokreni() {
         document.getElementById("section-" + sekcija).classList.add("active");
         updateSEOForSection(sekcija);
 
+        // Ažuriraj URL parametar
+        if (history.replaceState) {
+          const url = new URL(window.location.href);
+          if (sekcija === 'pregled') url.searchParams.delete('section');
+          else url.searchParams.set('section', sekcija);
+          history.replaceState({}, '', url.toString());
+        }
+
         if (sekcija === 'pregled' && !klubTablicaRenderirana) {
           renderKlubTablicu();
           nacrtajZutiChart();
@@ -854,7 +893,7 @@ function sazetak() {
 }
 
 // ============================================================
-// GRAF — linijski, po sezoni kad je UKUPNO
+// GRAF
 // ============================================================
 function nacrtajZutiChart() {
   const canvas = document.getElementById("zutiChart");
@@ -1503,7 +1542,7 @@ function azurirajUsporedbuKlubova(a, b) {
 }
 
 // ============================================================
-// IGRA — KVIZ (Pogodi suca + Pogodi broj)
+// IGRA — KVIZ
 // ============================================================
 const IGRA_KEY = 'posteno_sudenje_igra_rekord';
 const IGRA_BROJ_PITANJA = 15;
@@ -1590,7 +1629,6 @@ function igraGenerirajPitanja() {
   ])];
   if (sviSuci.length < 4 || sviKlubovi.length < 4) return [];
 
-  // Agregati po sucu
   const poSudcu = {};
   sviSuci.forEach(s => {
     poSudcu[s] = { zuti: 0, crveni: 0, penal: 0, vp: 0, vpo: 0, utakmica: 0 };
@@ -1605,7 +1643,6 @@ function igraGenerirajPitanja() {
     poSudcu[s].vpo += num(u['VAR poništen D']) + num(u['VAR poništen G']);
   });
 
-  // Agregati po klubu
   const poKlubu = {};
   sviKlubovi.forEach(k => {
     poKlubu[k] = { zuti: 0, crveni: 0, penal: 0 };
@@ -1623,14 +1660,13 @@ function igraGenerirajPitanja() {
 
   const svaPitanja = [];
 
-  // TIP 1: Koji sudac je sudio utakmicu? (sa brojem odluka)
+  // TIP 1
   igraNasumicnoOdaberi(validne, 6).forEach(u => {
     const tocan = String(u['Glavni sudac']).trim();
     const ostali = sviSuci.filter(s => s !== tocan);
     const lazni = igraNasumicnoOdaberi(ostali, 3);
     const odgovori = igraNasumicnoOdaberi([tocan, ...lazni], 4);
 
-    // Izračunaj odluke u ovoj utakmici
     const zuti = num(u['Žuti D']) + num(u['Žuti G']);
     const crveni = num(u['Crveni D']) + num(u['Crveni G']);
     const penal = num(u['Penal D']) + num(u['Penal G']);
@@ -1638,7 +1674,6 @@ function igraGenerirajPitanja() {
     const vpo = num(u['VAR poništen D']) + num(u['VAR poništen G']);
     const ukupnoOdluka = zuti + crveni + penal + vp + vpo;
 
-    // Sastavi listu odluka (samo one koje su > 0)
     const odluke = [];
     if (zuti > 0) odluke.push(`🟨 ${zuti} žutih`);
     if (crveni > 0) odluke.push(`🟥 ${crveni} crvenih`);
@@ -1659,7 +1694,7 @@ function igraGenerirajPitanja() {
     });
   });
 
-  // TIP 2: Koliko je sudac dosudio X?
+  // TIP 2
   const tipoviBrojeva = ['zuti', 'crveni', 'penal'];
   igraNasumicnoOdaberi(sviSuci, 6).forEach((sudac, idx) => {
     const tip = tipoviBrojeva[idx % tipoviBrojeva.length];
@@ -1676,7 +1711,7 @@ function igraGenerirajPitanja() {
     });
   });
 
-  // TIP 3: Koji klub ima najviše X?
+  // TIP 3
   ['zuti', 'crveni', 'penal'].forEach(tip => {
     const nazivTipa = tip === 'zuti' ? 'žutih kartona' : tip === 'crveni' ? 'crvenih kartona' : 'penala';
     const nazivIkone = tip === 'zuti' ? '🟨' : tip === 'crveni' ? '🟥' : '⚽';
@@ -1694,7 +1729,7 @@ function igraGenerirajPitanja() {
     });
   });
 
-  // TIP 4: Koliko je utakmica sudio sudac?
+  // TIP 4
   igraNasumicnoOdaberi(sviSuci, 4).forEach(sudac => {
     const ukupno = poSudcu[sudac].utakmica;
     const odgovori = igraGenerirajBrojOpcije(ukupno);
@@ -1707,7 +1742,7 @@ function igraGenerirajPitanja() {
     });
   });
 
-  // TIP 5: U kojoj sezoni je sudac sudio VIŠE utakmica?
+  // TIP 5
   const suciObeSezone = sviSuci.filter(s => {
     const uAkt = validne.filter(u => u._sezona === 'AKTIVNA' && String(u['Glavni sudac']).trim() === s).length;
     const uPro = validne.filter(u => u._sezona === '2025-26' && String(u['Glavni sudac']).trim() === s).length;
@@ -1728,7 +1763,7 @@ function igraGenerirajPitanja() {
     });
   });
 
-  // TIP 6: Koji sudac je dosudio NAJVIŠE penala?
+  // TIP 6
   const sortPenali = Object.entries(poSudcu).sort((a, b) => b[1].penal - a[1].penal);
   const tocanPenali = sortPenali[0][0];
   const ostaliPenali = sviSuci.filter(s => s !== tocanPenali);
@@ -1741,7 +1776,7 @@ function igraGenerirajPitanja() {
     tocan: tocanPenali
   });
 
-  // TIP 7: Koliko je klub dobio crvenih kartona?
+  // TIP 7
   igraNasumicnoOdaberi(sviKlubovi, 4).forEach(klub => {
     const ukupno = poKlubu[klub].crveni;
     const odgovori = igraGenerirajBrojOpcije(ukupno);
@@ -1754,7 +1789,6 @@ function igraGenerirajPitanja() {
     });
   });
 
-  // Izmiješaj
   for (let i = svaPitanja.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [svaPitanja[i], svaPitanja[j]] = [svaPitanja[j], svaPitanja[i]];
@@ -2012,18 +2046,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const themeBtn = document.getElementById("themeToggle");
   if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
 
-  document.getElementById("modalCopyBtn").addEventListener("click", kopirajLink);
-  document.getElementById("modalShareBtn").addEventListener("click", () => {
+  const modalCopyBtn = document.getElementById("modalCopyBtn");
+  if (modalCopyBtn) modalCopyBtn.addEventListener("click", kopirajLink);
+  const modalShareBtn = document.getElementById("modalShareBtn");
+  if (modalShareBtn) modalShareBtn.addEventListener("click", () => {
     if (trenutniModal) podijeli(trenutniModal.tip, trenutniModal.ime);
   });
-  document.getElementById("modalCsvBtn").addEventListener("click", preuzmiCSV);
-  document.getElementById("modalOverlay").addEventListener("click", e => {
-    if (e.target.id === "modalOverlay") closeModal();
-  });
+  const modalCsvBtn = document.getElementById("modalCsvBtn");
+  if (modalCsvBtn) modalCsvBtn.addEventListener("click", preuzmiCSV);
+  const modalOverlay = document.getElementById("modalOverlay");
+  if (modalOverlay) {
+    modalOverlay.addEventListener("click", e => {
+      if (e.target.id === "modalOverlay") closeModal();
+    });
+  }
   document.addEventListener("keydown", e => {
-    if (e.key === "Escape") closeModal();
+    if (e.key === "Escape") {
+      if (trenutniModal) closeModal();
+    }
   });
-  document.getElementById("modalClose").addEventListener("click", closeModal);
+  const modalClose = document.getElementById("modalClose");
+  if (modalClose) modalClose.addEventListener("click", closeModal);
 
   const mq = window.matchMedia('(prefers-color-scheme: light)');
   const mqHandler = e => {
@@ -2079,7 +2122,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Na glavnoj stranici inicijaliziraj igru, na igra.html će je ucitajPodatke pozvati
   if (document.getElementById("igraStart")) {
     igraInicijaliziraj();
   }
