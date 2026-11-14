@@ -31,7 +31,6 @@
   --font-body:'Figtree', 'Inter', system-ui, sans-serif;
 }
 
-/* LIGHT TEMA — poboljšan kontrast */
 :root[data-theme="light"] {
   --black:#f5f6f8;
   --dark:#ffffff;
@@ -121,7 +120,7 @@ h1, h2, h3, h4 {
 .karton-ikona.veliki { width: 26px; height: 36px; border-radius: 3px; }
 .card-icon-wrap { display: flex; align-items: center; justify-content: center; width: 44px; flex-shrink: 0; }
 
-/* GRBOVI — transparentna pozadina */
+/* GRBOVI */
 .klub-grb {
   display: inline-flex;
   align-items: center;
@@ -189,7 +188,7 @@ img.klub-grb { object-fit: contain; background: transparent; }
   transform: translateY(-2px);
 }
 
-/* Ko-fi (kava) — žut konstantno */
+/* Ko-fi — žut */
 .social-icon.coffee-icon {
   background: var(--yellow-soft);
   color: var(--yellow);
@@ -274,10 +273,7 @@ img.klub-grb { object-fit: contain; background: transparent; }
 }
 .hero-chip i { color: var(--yellow); font-size: 0.85rem; }
 
-/* ============================================================
-   MENU WRAPPER + DROP-DOWN EFEKT
-   ============================================================ */
-
+/* MENU */
 .menu-wrapper {
   display: flex;
   flex-direction: column;
@@ -288,8 +284,6 @@ img.klub-grb { object-fit: contain; background: transparent; }
   position: relative;
   z-index: 100;
 }
-
-/* GLAVNI MENU */
 .main-menu {
   display: flex;
   justify-content: center;
@@ -307,11 +301,7 @@ img.klub-grb { object-fit: contain; background: transparent; }
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
-
-.main-menu::-webkit-scrollbar {
-  display: none;
-}
-
+.main-menu::-webkit-scrollbar { display: none; }
 
 .menu-item {
   padding: 0.55rem 0.9rem;
@@ -334,9 +324,7 @@ img.klub-grb { object-fit: contain; background: transparent; }
   background: rgba(96,165,250,0.1);
   border-color: rgba(96,165,250,0.35);
 }
-.menu-item:hover i {
-  color: var(--blue);
-}
+.menu-item:hover i { color: var(--blue); }
 .menu-item.active {
   background: var(--yellow);
   color: #000;
@@ -352,9 +340,7 @@ img.klub-grb { object-fit: contain; background: transparent; }
   box-shadow: 0 4px 16px rgba(96,165,250,0.35);
   font-weight: 700;
 }
-.menu-item[data-section="usporedba"].active i {
-  color: #000;
-}
+.menu-item[data-section="usporedba"].active i { color: #000; }
 .menu-item i { font-size: 0.9rem; }
 
 :root[data-theme="light"] .menu-item:hover {
@@ -362,14 +348,9 @@ img.klub-grb { object-fit: contain; background: transparent; }
   background: rgba(29,78,216,0.08);
   border-color: rgba(29,78,216,0.3);
 }
-:root[data-theme="light"] .menu-item:hover i {
-  color: var(--blue);
-}
-:root[data-theme="light"] .main-menu {
-  box-shadow: 0 0 0 1px rgba(184,134,11,0.1);
-}
+:root[data-theme="light"] .menu-item:hover i { color: var(--blue); }
+:root[data-theme="light"] .main-menu { box-shadow: 0 0 0 1px rgba(184,134,11,0.1); }
 
-/* SEASON MENU — Drop-down stil */
 .season-menu {
   position: static;
   margin: 0;
@@ -387,11 +368,7 @@ img.klub-grb { object-fit: contain; background: transparent; }
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
-
-.season-menu::-webkit-scrollbar {
-  display: none;
-}
-
+.season-menu::-webkit-scrollbar { display: none; }
 .season-menu .menu-item.active {
   background: var(--yellow);
   color: #000;
@@ -399,9 +376,7 @@ img.klub-grb { object-fit: contain; background: transparent; }
   font-weight: 700;
   box-shadow: 0 2px 10px rgba(245,197,24,0.3);
 }
-.season-menu .menu-item.active i {
-  color: #000;
-}
+.season-menu .menu-item.active i { color: #000; }
 
 @keyframes dropDown {
   from { opacity: 0; transform: translateY(-10px); }
@@ -413,21 +388,18 @@ img.klub-grb { object-fit: contain; background: transparent; }
   box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
 
-/* Sakrij season menu kad nije Pregled aktivan */
 body:has(#section-statistika.active) .season-menu,
 body:has(#section-utakmice.active) .season-menu,
 body:has(#section-usporedba.active) .season-menu {
   display: none !important;
 }
 
-/* Kada je season menu sakriven, glavni menu vraća donje zaobljenje i skriva liniju */
 body:has(#section-statistika.active) .main-menu,
 body:has(#section-utakmice.active) .main-menu,
 body:has(#section-usporedba.active) .main-menu {
   border-radius: 14px;
   margin-bottom: 1.5rem;
 }
-
 
 .section-panel { display: none; }
 .section-panel.active { display: block; }
@@ -519,7 +491,6 @@ body:has(#section-usporedba.active) .main-menu {
 }
 .selector label i { color: var(--yellow); }
 
-/* MODERN SELECT */
 .modern-select { position: relative; display: inline-block; min-width: 180px; }
 .modern-select select {
   appearance: none;
@@ -723,7 +694,6 @@ tbody tr { transition: background 0.15s ease; }
 tbody tr:hover td { background: var(--yellow-soft); }
 tbody tr:last-child td { border-bottom: none; }
 
-/* KLUB BADGE */
 .klub-badge {
   background: transparent;
   color: var(--text);
@@ -1009,7 +979,6 @@ tbody tr:last-child td { border-bottom: none; }
 }
 .seo-footer-text .bmc-button i { color: #000; }
 
-/* YouTube dugme u footeru — uvijek crveno */
 .seo-footer-text .yt-button,
 .seo-footer-text .yt-button:link,
 .seo-footer-text .yt-button:visited {
@@ -1235,6 +1204,31 @@ tbody tr:last-child td { border-bottom: none; }
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--card-bg);
+  color: var(--text);
+  padding: 0.9rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-lg);
+  font-weight: 600;
+  z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.toast-success { border-color: var(--green); color: var(--green); }
+.toast-error { border-color: var(--red); color: var(--red); }
+
 /* SCROLLBAR */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -1242,9 +1236,7 @@ tbody tr:last-child td { border-bottom: none; }
 ::-webkit-scrollbar-thumb:hover { background: #444; }
 :root[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #888; }
 
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
+/* RESPONSIVE */
 @media (max-width: 900px) {
   .modal-title-text h2 { font-size: 1.15rem; }
   .modal-body { padding: 1.3rem 1.3rem; }
@@ -1268,7 +1260,7 @@ tbody tr:last-child td { border-bottom: none; }
     max-width: 100%;
     width: 100%;
   }
-  
+
   .menu-item {
     flex: 1 1 auto;
     justify-content: center;
