@@ -16,7 +16,6 @@ if (!fs.existsSync(dataPath)) {
 
 const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
 
-// Spoji sve utakmice iz svih sezona
 const sveUtakmice = [];
 if (data.aktivna) {
   data.aktivna.forEach(u => sveUtakmice.push({ ...u, _sezona: 'AKTIVNA' }));
@@ -60,7 +59,7 @@ function escapeHtml(s) {
 }
 
 // ============================================================
-// GRBOVI (isti kao u script.js)
+// GRBOVI
 // ============================================================
 const GRBOVI_KLUBOVA = {
   "Dinamo": "https://hnl.hr/static/images/clubs/mq/dinamo.png",
@@ -629,7 +628,6 @@ const klubDir = path.join(rootDir, 'klub');
 fs.mkdirSync(sudacDir, { recursive: true });
 fs.mkdirSync(klubDir, { recursive: true });
 
-// Prikupi sve suce i klubove
 const sviSuciSet = new Set();
 const sviKluboviSet = new Set();
 
@@ -647,7 +645,6 @@ const sviKlubovi = [...sviKluboviSet].sort((a, b) => a.localeCompare(b, 'hr'));
 
 console.log(`Sudaca: ${sviSuci.length}, klubova: ${sviKlubovi.length}`);
 
-// Generiraj stranice sudaca
 let brojSudaca = 0;
 sviSuci.forEach(sudac => {
   const stat = izracunajStatSudac(sudac, validne);
@@ -659,7 +656,6 @@ sviSuci.forEach(sudac => {
   console.log(`  ✓ sudac/${slug}.html`);
 });
 
-// Generiraj stranice klubova
 let brojKlubova = 0;
 sviKlubovi.forEach(klub => {
   const stat = izracunajStatKlub(klub, validne);
@@ -766,9 +762,6 @@ sitemap += `
 
 fs.writeFileSync(path.join(rootDir, 'sitemap.xml'), sitemap);
 
-// ============================================================
-// SAŽETAK
-// ============================================================
 console.log('');
 console.log('=== SAŽETAK ===');
 console.log(`Generirano sudačkih stranica: ${brojSudaca}`);
