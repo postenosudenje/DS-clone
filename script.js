@@ -205,12 +205,11 @@ function ocistiURL() {
 }
 
 // ============================================================
-// PROVJERA URL-a — ?section=, ?sudac=, ?klub=
+// PROVJERA URL-a
 // ============================================================
 function provjeriURL() {
   const params = new URLSearchParams(window.location.search);
 
-  // 1. ?section= parametar
   const sekcijaParam = params.get('section');
   if (sekcijaParam && ['pregled', 'statistika', 'utakmice', 'usporedba'].includes(sekcijaParam)) {
     document.querySelectorAll("#mainMenu .menu-item[data-section]").forEach(m => m.classList.remove("active"));
@@ -232,7 +231,6 @@ function provjeriURL() {
     }
   }
 
-  // 2. ?sudac= parametar
   const sudacSlug = params.get('sudac');
   if (sudacSlug) {
     const sudac = pronadjiIzSluga(sudacSlug, sviSuci);
@@ -247,7 +245,6 @@ function provjeriURL() {
     }
   }
 
-  // 3. ?klub= parametar
   const klubSlug = params.get('klub');
   if (klubSlug) {
     const klub = pronadjiIzSluga(klubSlug, sviKlubovi);
@@ -297,25 +294,24 @@ function prikaziToast(poruka, tip = 'success') {
 }
 
 // ============================================================
-// SHARE
+// SHARE — relativni URL-ovi
 // ============================================================
 async function podijeli(tip, ime) {
-  const url = new URL(window.location.href);
-  url.searchParams.delete('sudac');
-  url.searchParams.delete('klub');
+  const base = window.location.href.split('?')[0].split('#')[0];
+  const dir = base.substring(0, base.lastIndexOf('/') + 1);
 
   let naslov, tekst, shareUrl;
 
   if (tip === 'sudac') {
-    shareUrl = `${url.origin}/sudac/${slugify(ime)}.html`;
+    shareUrl = `${dir}sudac/${slugify(ime)}.html`;
     naslov = `${ime} — statistika suđenja | Pošteno suđenje`;
     tekst = `Pogledaj statistiku suca ${ime} u HNL-u.`;
   } else if (tip === 'klub') {
-    shareUrl = `${url.origin}/klub/${slugify(ime)}.html`;
+    shareUrl = `${dir}klub/${slugify(ime)}.html`;
     naslov = `${ime} — statistika | Pošteno suđenje`;
     tekst = `Pogledaj statistiku kluba ${ime} u HNL-u.`;
   } else {
-    shareUrl = url.toString();
+    shareUrl = base;
     naslov = document.title;
     tekst = 'Pošteno suđenje — analiza HNL suđenja';
   }
@@ -724,7 +720,6 @@ async function ucitajPodatke(sezona = TRENUTNA_SEZONA) {
     }
   }
 
-  // Ako nema #app (npr. na igra.html), samo pokreni igru
   if (!document.getElementById("app")) {
     igraInicijaliziraj();
     return;
@@ -811,7 +806,6 @@ function pokreni() {
         document.getElementById("section-" + sekcija).classList.add("active");
         updateSEOForSection(sekcija);
 
-        // Ažuriraj URL parametar
         if (history.replaceState) {
           const url = new URL(window.location.href);
           if (sekcija === 'pregled') url.searchParams.delete('section');
@@ -1995,7 +1989,7 @@ function igraZavrsi(pobjeda) {
 async function igraPodijeli() {
   const brojTocnih = igraState.trenutno;
   const tekst = `Pogodio sam ${brojTocnih}/${IGRA_BROJ_PITANJA} pitanja u kvizu "Pošteno suđenje"! Možeš li ti bolje?`;
-  const url = window.location.origin;
+  const url = window.location.href.split('?')[0].split('#')[0];
 
   if (navigator.share && /Android|iPhone|iPad/i.test(navigator.userAgent)) {
     try {
