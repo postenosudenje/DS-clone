@@ -250,7 +250,74 @@ function dohvatiUtakmiceZaSezonu(sezona) {
 }
 
 // ============================================================
-// COPY LINK
+// TOAST
+// ============================================================
+function prikaziToast(poruka, tip = 'success') {
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${tip}`;
+  toast.textContent = poruka;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.classList.add('visible'), 10);
+  setTimeout(() => {
+    toast.classList.remove('visible');
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
+
+// ============================================================
+// SHARE
+// ============================================================
+async function podijeli(tip, ime) {
+  const url = new URL(window.location.href);
+  url.searchParams.delete('sudac');
+  url.searchParams.delete('klub');
+
+  let naslov, tekst, shareUrl;
+
+  if (tip === 'sudac') {
+    shareUrl = `${url.origin}/sudac/${slugify(ime)}.html`;
+    naslov = `${ime} — statistika suđenja | Pošteno suđenje`;
+    tekst = `Pogledaj statistiku suca ${ime} u HNL-u.`;
+  } else if (tip === 'klub') {
+    shareUrl = `${url.origin}/klub/${slugify(ime)}.html`;
+    naslov = `${ime} — statistika | Pošteno suđenje`;
+    tekst = `Pogledaj statistiku kluba ${ime} u HNL-u.`;
+  } else {
+    shareUrl = url.toString();
+    naslov = document.title;
+    tekst = 'Pošteno suđenje — analiza HNL suđenja';
+  }
+
+  if (navigator.share && /Android|iPhone|iPad/i.test(navigator.userAgent)) {
+    try {
+      await navigator.share({ title: naslov, text: tekst, url: shareUrl });
+      return;
+    } catch (e) {
+      if (e.name === 'AbortError') return;
+    }
+  }
+
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(shareUrl);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = shareUrl;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    prikaziToast('Link kopiran!');
+  } catch (e) {
+    prikaziToast('Kopiranje nije uspjelo', 'error');
+  }
+}
+
+// ============================================================
+// COPY LINK (postojeća funkcija)
 // ============================================================
 async function kopirajLink() {
   if (!trenutniModal) return;
@@ -775,7 +842,7 @@ function sazetak() {
 }
 
 // ============================================================
-// GRAF — dinamički: po kolu (pojedinačna sezona) ili po sezoni (UKUPNO)
+// GRAF — linijski uvijek, po sezoni kad je UKUPNO
 // ============================================================
 function nacrtajZutiChart() {
   const canvas = document.getElementById("zutiChart");
@@ -787,7 +854,6 @@ function nacrtajZutiChart() {
   let labels, vrijednosti, datasetLabel;
 
   if (jeUkupno) {
-    // Grupiraj po sezoni
     const poSezoni = {};
     UTakmiceKompletne.forEach(u => {
       const s = u._sezona || 'Nepoznato';
@@ -846,26 +912,23 @@ function nacrtajZutiChart() {
     ? 'rgba(184,134,11,0.25)' : 'rgba(245,197,24,0.35)');
   gradient.addColorStop(1, 'rgba(245,197,24,0.02)');
 
-  const tipGrafa = jeUkupno ? 'bar' : 'line';
-
   zutiChartInstance = new Chart(ctx, {
-    type: tipGrafa,
+    type: 'line',
     data: {
       labels: labels,
       datasets: [{
         label: datasetLabel,
         data: vrijednosti,
         borderColor: yellowColor,
-        backgroundColor: jeUkupno ? yellowColor : gradient,
+        backgroundColor: gradient,
         borderWidth: 2.5,
-        fill: !jeUkupno,
+        fill: true,
         tension: 0.35,
-        pointRadius: 4,
-        pointHoverRadius: 7,
+        pointRadius: 6,
+        pointHoverRadius: 9,
         pointBackgroundColor: yellowColor,
         pointBorderColor: borderColor,
-        pointBorderWidth: 2,
-        borderRadius: jeUkupno ? 8 : 0
+        pointBorderWidth: 2
       }]
     },
     options: {
@@ -1451,6 +1514,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
 
   document.getElementById("modalCopyBtn").addEventListener("click", kopirajLink);
+  document.getElementById("modalShareBtn").addEventListener("click", () => {
+    if (trenutniModal) podijeli(trenutniModal.tip, trenutniModal.ime);
+  });
   document.getElementById("modalCsvBtn").addEventListener("click", preuzmiCSV);
   document.getElementById("modalOverlay").addEventListener("click", e => {
     if (e.target.id === "modalOverlay") closeModal();
